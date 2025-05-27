@@ -2,6 +2,7 @@
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { RouterLink } from 'vue-router'
 import FAQ from '@/components/FAQ.vue'
 </script>
 

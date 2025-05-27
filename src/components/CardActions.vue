@@ -1,11 +1,15 @@
+<script setup>
+import { RouterLink } from 'vue-router'
+</script>
+
 <template>
   <!-- Mobile Navbar -->
   <nav class="mt-9 mx-auto flex justify-center w-full">
     <div class="px-7">
       <div class="flex">
         <div class="flex-1 group">
-          <a
-            href="#"
+          <RouterLink
+            to="/recharge"
             class="flex items-center justify-center flex-col text-center mx-auto px-4 pt-2 w-full text-black group-hover:text-blue-600"
           >
             <span class="block p-3 bg-white rounded-full shadow-md">
@@ -25,7 +29,7 @@
               </svg>
             </span>
             <span class="block text-xs pb-2 mt-2">Recargar</span>
-          </a>
+          </RouterLink>
         </div>
         <div class="flex-1 group">
           <a

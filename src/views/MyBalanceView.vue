@@ -6,9 +6,9 @@ import CardActions from '@/components/CardActions.vue'
   <section>
     <div class="mt-4 flex justify-between px-4">
       <h1 class="text-2xl font-semibold">Mi Saldo</h1>
-      <h1 class="text-2xl font-semibold text-cyan-500">
+      <h2 class="text-2xl font-semibold text-cyan-500">
         UCLA <span class="text-blue-600">Go</span>
-      </h1>
+      </h2>
     </div>
 
     <div class="mt-4">
