@@ -15,6 +15,12 @@ coverage
 *.local
 .env
 
+# Evitar que se suba la configuracion para HTTPS
+
+cert.pem
+key.pem
+vite.config.dev.js
+
 /cypress/videos/
 /cypress/screenshots/
 

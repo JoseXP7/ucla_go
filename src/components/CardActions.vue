@@ -32,8 +32,8 @@ import { RouterLink } from 'vue-router'
           </RouterLink>
         </div>
         <div class="flex-1 group">
-          <a
-            href="#"
+          <RouterLink
+            to="/scanQR"
             class="flex items-center justify-center flex-col text-center mx-auto px-4 pt-2 w-full text-black group-hover:text-blue-600"
           >
             <span class="block p-3 bg-white rounded-full shadow-md">
@@ -58,7 +58,7 @@ import { RouterLink } from 'vue-router'
               </svg>
             </span>
             <span class="block text-xs pb-2 mt-2">Escanear</span>
-          </a>
+          </RouterLink>
         </div>
         <div class="flex-1 group">
           <a
