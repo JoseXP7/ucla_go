@@ -26,7 +26,7 @@ export function useAuth() {
     if (error) throw error
 
     setUser(data.user)
-    router.push('/')
+    router.push('/mybalance')
   }
 
   const loginWithPassw = async ({ email, password }) => {
@@ -37,7 +37,7 @@ export function useAuth() {
     if (error) throw error
 
     setUser(data.user)
-    router.push('/')
+    router.push('/mybalance')
   }
 
   const getUserRole = async () => {
