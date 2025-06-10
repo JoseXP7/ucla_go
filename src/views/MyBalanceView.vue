@@ -1,5 +1,16 @@
 <script setup>
+import { onMounted } from 'vue'
 import CardActions from '@/components/CardActions.vue'
+import { useUser } from '@/composables/useUser'
+import { useAuth } from '@/composables/useAuth'
+
+// const { getSession } = useAuth()
+
+// const { user } = useUser()
+
+// onMounted(() => {
+//   getSession()
+// })
 </script>
 
 <template>

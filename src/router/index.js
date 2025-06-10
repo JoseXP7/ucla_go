@@ -1,5 +1,28 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { useAuth } from '@/composables/useAuth'
+
+const { getSession } = useAuth()
+
+// Check if the user is authenticated before each route
+
+const isAuth = async (to, from, next) => {
+  const session = await getSession()
+  if (!session) {
+    next({ name: 'login' })
+  } else {
+    next()
+  }
+}
+
+const isLoginAuth = async (to, from, next) => {
+  const session = await getSession()
+  if (session) {
+    next({ name: 'mybalance' })
+  } else {
+    next()
+  }
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,6 +47,7 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/LoginView.vue'),
+      beforeEnter: isLoginAuth,
     },
     {
       path: '/register',
@@ -32,6 +56,7 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/RegisterView.vue'),
+      beforeEnter: isLoginAuth,
     },
     {
       path: '/createProfile',
@@ -49,6 +74,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/MyBalanceView.vue'),
       meta: { showMobileNavbar: true },
+      beforeEnter: isAuth,
     },
     {
       path: '/transactions',
@@ -58,6 +84,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/TransactionsView.vue'),
       meta: { showMobileNavbar: true },
+      beforeEnter: isAuth,
     },
     {
       path: '/ucard',
@@ -67,6 +94,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/UCardView.vue'),
       meta: { showMobileNavbar: true },
+      beforeEnter: isAuth,
     },
     {
       path: '/myprofile',
@@ -76,6 +104,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/ProfileView.vue'),
       meta: { showMobileNavbar: true },
+      beforeEnter: isAuth,
     },
     {
       path: '/recharge',
@@ -85,6 +114,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/RechargeBalance.vue'),
       meta: { showMobileNavbar: true },
+      beforeEnter: isAuth,
     },
     {
       path: '/scanQR',
@@ -94,6 +124,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/ScanQRView.vue'),
       meta: { showMobileNavbar: true },
+      beforeEnter: isAuth,
     },
   ],
 })
