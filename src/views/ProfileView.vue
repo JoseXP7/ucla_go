@@ -2,8 +2,18 @@
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { RouterLink } from 'vue-router'
 import FAQ from '@/components/FAQ.vue'
+import { RouterLink, useRouter } from 'vue-router'
+
+const router = useRouter()
+
+import { useAuth } from '@/composables/useAuth'
+
+const handleLogout = async () => {
+  const { signOut } = useAuth()
+  await signOut()
+  router.push('/')
+}
 </script>
 
 <template>
@@ -81,6 +91,12 @@ import FAQ from '@/components/FAQ.vue'
     <div class="mt-8 px-4">
       <h3 class="mb-2 text-lg font-bold">Preguntas Frecuentes</h3>
       <FAQ />
+    </div>
+
+    <div class="mt-8 px-4">
+      <div class="grid w-full max-w-sm items-center gap-1.5">
+        <Button type="button" class="w-full" @click="handleLogout">Cerrar Sesión</Button>
+      </div>
     </div>
   </section>
 </template>

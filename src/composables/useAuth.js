@@ -40,6 +40,12 @@ export function useAuth() {
     router.push('/mybalance')
   }
 
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut()
+
+    if (error) throw error
+  }
+
   const getUserRole = async () => {
     const session = await getSession()
     const { data, error } = await supabase
@@ -56,5 +62,6 @@ export function useAuth() {
     signUpWithPassw,
     loginWithPassw,
     getUserRole,
+    signOut,
   }
 }
