@@ -75,7 +75,6 @@ const updateProfile = async () => {
     })
     router.push('/mybalance')
   } catch (error) {
-    console.log(error)
     toast.error(error.message, {
       position: 'bottom-right',
       duration: 5000,

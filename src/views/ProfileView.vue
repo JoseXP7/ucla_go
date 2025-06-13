@@ -2,25 +2,82 @@
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { toast } from 'vue-sonner'
 import FAQ from '@/components/FAQ.vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { ref } from 'vue'
+import { useSupabase } from '@/clients/supabase'
 
 const router = useRouter()
 
 import { useAuth } from '@/composables/useAuth'
 import { useUserStore } from '@/stores/userStore'
 
+const { supabase } = useSupabase()
 const userStore = useUserStore()
 
-const firstName = ref(userStore.profile.first_name || '')
-const lastName = ref(userStore.profile.last_name || '')
-const contact_number = ref(userStore.profile.contact_number || '')
+const firstName = ref(userStore.profile?.first_name || '')
+const lastName = ref(userStore.profile?.last_name || '')
+const contact_number = ref(userStore.profile?.contact_number || '')
+const loading = ref(false)
 
 const handleLogout = async () => {
   const { signOut } = useAuth()
   await signOut()
   router.push('/')
+}
+
+const updateProfile = async () => {
+  if (!firstName.value || !lastName.value || !contact_number.value) {
+    toast.error('Por favor, completa todos los campos.', {
+      position: 'bottom-right',
+      duration: 5000,
+      style: {
+        backgroundColor: '#EF4444',
+        color: '#fff',
+        border: 'none',
+      },
+    })
+    return
+  }
+
+  try {
+    loading.value = true
+
+    const updates = {
+      id: userStore.profile.id,
+      first_name: firstName.value,
+      last_name: lastName.value,
+      contact_number: contact_number.value,
+    }
+
+    const { error } = await supabase.from('profiles').upsert(updates)
+
+    if (error) throw error
+
+    toast.success('Perfil actualizado con éxito.', {
+      position: 'bottom-right',
+      duration: 5000,
+      style: {
+        backgroundColor: '#4ade80',
+        color: '#fff',
+        border: 'none',
+      },
+    })
+  } catch (error) {
+    toast.error(error.message, {
+      position: 'bottom-right',
+      duration: 5000,
+      style: {
+        backgroundColor: '#EF4444',
+        color: '#fff',
+        border: 'none',
+      },
+    })
+    return
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -52,11 +109,11 @@ const handleLogout = async () => {
     <div class="mt-4 mb-2 px-4">
       <h3>Datos Personales</h3>
 
-      <form action="" autocomplete="off">
+      <form action="" autocomplete="off" @submit.prevent="updateProfile()">
         <div class="mt-6 grid w-full max-w-sm items-center gap-1.5">
           <Label for="ci">Cedula</Label>
           <div class="flex items-center gap-2">
-            <p>{{ userStore.profile.ci_type }} - {{ userStore.profile.ci }}</p>
+            <p>{{ userStore.profile?.ci_type }} - {{ userStore.profile?.ci }}</p>
           </div>
         </div>
 
@@ -93,7 +150,7 @@ const handleLogout = async () => {
         </div>
 
         <div class="mt-6 flex items-center gap-x-2">
-          <Button type="button" class="w-full max-w-sm">Guardar Cambios</Button>
+          <Button type="submit" class="w-full max-w-sm" :disabled="loading">Guardar Cambios</Button>
         </div>
       </form>
     </div>
