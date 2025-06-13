@@ -46,6 +46,31 @@ const isLoginAuth = async (to, from, next) => {
   }
 }
 
+const isCreateProfile = async (to, from, next) => {
+  const { getSession } = useAuth()
+  const userStore = useUserStore()
+  const session = await getSession()
+  if (!session) {
+    next({ name: 'login' })
+    return
+  }
+  userStore.setUser(session.user)
+  let userProfile = userStore.profile
+  if (!userProfile) {
+    try {
+      userProfile = await userStore.getProfile()
+    } catch (error) {
+      userProfile = null
+    }
+  }
+  // Si ya tiene perfil, redirige a /mybalance
+  if (userProfile) {
+    next({ name: 'mybalance' })
+  } else {
+    next()
+  }
+}
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -87,7 +112,7 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/createProfileView.vue'),
-      beforeEnter: isAuth,
+      beforeEnter: isCreateProfile,
     },
     {
       path: '/mybalance',
