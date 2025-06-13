@@ -1,11 +1,9 @@
-import { useRouter } from 'vue-router'
 import { useSupabase } from '@/clients/supabase'
-import { useUser } from './useUser'
+import { useUserStore } from '@/stores/userStore'
 
 export function useAuth() {
   const { supabase } = useSupabase()
-  const { setUser } = useUser()
-  const router = useRouter()
+  const userStore = useUserStore()
 
   const getSession = async () => {
     const { data, error } = await supabase.auth.getSession()
@@ -13,7 +11,8 @@ export function useAuth() {
     if (error) throw error
 
     if (data.session && data.session.user) {
-      setUser(data.session.user)
+      userStore.setUser(data.session.user)
+      await userStore.getProfile()
     }
     return data.session
   }
@@ -25,8 +24,8 @@ export function useAuth() {
     })
     if (error) throw error
 
-    setUser(data.user)
-    router.push('/mybalance')
+    userStore.setUser(data.user)
+    await userStore.getProfile()
   }
 
   const loginWithPassw = async ({ email, password }) => {
@@ -36,32 +35,21 @@ export function useAuth() {
     })
     if (error) throw error
 
-    setUser(data.user)
-    router.push('/mybalance')
+    userStore.setUser(data.user)
+    await userStore.getProfile()
   }
 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut()
+    userStore.clear()
 
     if (error) throw error
-  }
-
-  const getUserRole = async () => {
-    const session = await getSession()
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', session.user.id)
-      .single()
-    if (error) throw error
-    return data.role
   }
 
   return {
     getSession,
     signUpWithPassw,
     loginWithPassw,
-    getUserRole,
     signOut,
   }
 }

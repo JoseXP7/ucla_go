@@ -4,10 +4,18 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import FAQ from '@/components/FAQ.vue'
 import { RouterLink, useRouter } from 'vue-router'
+import { ref } from 'vue'
 
 const router = useRouter()
 
 import { useAuth } from '@/composables/useAuth'
+import { useUserStore } from '@/stores/userStore'
+
+const userStore = useUserStore()
+
+const firstName = ref(userStore.profile.first_name || '')
+const lastName = ref(userStore.profile.last_name || '')
+const contact_number = ref(userStore.profile.contact_number || '')
 
 const handleLogout = async () => {
   const { signOut } = useAuth()
@@ -47,27 +55,29 @@ const handleLogout = async () => {
       <form action="" autocomplete="off">
         <div class="mt-6 grid w-full max-w-sm items-center gap-1.5">
           <Label for="ci">Cedula</Label>
-          <Input id="ci" />
+          <div class="flex items-center gap-2">
+            <p>{{ userStore.profile.ci_type }} - {{ userStore.profile.ci }}</p>
+          </div>
         </div>
 
         <div class="mt-4 grid w-full max-w-sm items-center gap-1.5">
           <Label for="first_name">Nombres</Label>
-          <Input id="first_name" />
+          <Input id="first_name" v-model="firstName" />
         </div>
 
         <div class="mt-4 grid w-full max-w-sm items-center gap-1.5">
           <Label for="last_name">Apellidos</Label>
-          <Input id="last_name" />
+          <Input id="last_name" v-model="lastName" />
         </div>
 
         <div class="mt-4 grid w-full max-w-sm items-center gap-1.5">
           <Label for="phone">Número de Celular</Label>
-          <Input id="phone" type="tel" />
+          <Input id="phone" type="tel" v-model="contact_number" />
         </div>
 
         <div class="mt-4 grid w-full max-w-sm items-center gap-1.5">
           <Label for="email">Correo electrónico</Label>
-          <Input id="email" disabled type="email" />
+          <p>{{ userStore.user.email }}</p>
         </div>
 
         <h3 class="mt-6">Seguridad</h3>
@@ -89,8 +99,10 @@ const handleLogout = async () => {
     </div>
 
     <div class="mt-8 px-4">
-      <h3 class="mb-2 text-lg font-bold">Preguntas Frecuentes</h3>
-      <FAQ />
+      <div class="grid w-full max-w-sm items-center gap-1.5">
+        <h3 class="mb-2 text-lg font-bold">Preguntas Frecuentes</h3>
+        <FAQ />
+      </div>
     </div>
 
     <div class="mt-8 px-4">

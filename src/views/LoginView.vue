@@ -1,8 +1,10 @@
 <script setup>
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { useAuth } from '@/composables/useAuth'
 import { toast } from 'vue-sonner'
+
+const router = useRouter()
 
 const loading = ref(false)
 const email = ref('')
@@ -17,6 +19,7 @@ const login = async () => {
       email: email.value,
       password: password.value,
     })
+    router.push('/mybalance')
   } catch (error) {
     toast.error(error.message, {
       position: 'bottom-right',

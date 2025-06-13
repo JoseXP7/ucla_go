@@ -1,16 +1,8 @@
 <script setup>
-import { onMounted } from 'vue'
 import CardActions from '@/components/CardActions.vue'
-import { useUser } from '@/composables/useUser'
-import { useAuth } from '@/composables/useAuth'
+import { useUserStore } from '@/stores/userStore'
 
-// const { getSession } = useAuth()
-
-// const { user } = useUser()
-
-// onMounted(() => {
-//   getSession()
-// })
+const userStore = useUserStore()
 </script>
 
 <template>
@@ -33,13 +25,17 @@ import { useAuth } from '@/composables/useAuth'
           <div class="flex justify-between">
             <div class="">
               <p class="font-light">Nombre</p>
-              <p class="font-medium tracking-widest">José Graterol</p>
+              <p class="font-medium tracking-widest">
+                {{ userStore.profile?.first_name || '' }} {{ userStore.profile?.last_name || '' }}
+              </p>
             </div>
             <img class="w-14 h-14" src="https://i.imgur.com/bbPHJVe.png" />
           </div>
           <div class="pt-1">
             <p class="font-light">Balance</p>
-            <p class="font-bold text-3xl tracking-more-wider">1335.00 Bs</p>
+            <p class="font-bold text-3xl tracking-more-wider">
+              {{ (userStore.profile?.account_balance ?? 0.0).toFixed(2) }} Bs
+            </p>
           </div>
           <div class="pt-6 pr-6">
             <div class="flex justify-between">
@@ -60,7 +56,10 @@ import { useAuth } from '@/composables/useAuth'
 
     <div class="mt-6 px-4">
       <h1 class="text-3xl font-semibold">
-        Bienvenido <span class="text-blue-600">Estudiante Promedio</span>!
+        Bienvenido
+        <span class="text-blue-600"
+          >{{ userStore.profile?.first_name || '' }} {{ userStore.profile?.last_name || '' }}</span
+        >!
       </h1>
       <p>Prueba alguna de las opciones</p>
     </div>

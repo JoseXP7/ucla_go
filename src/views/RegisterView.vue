@@ -1,9 +1,10 @@
 <script setup>
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { useAuth } from '@/composables/useAuth'
 import { toast } from 'vue-sonner'
 
+const router = useRouter()
 const loading = ref(false)
 const email = ref('')
 const password = ref('')
@@ -43,6 +44,7 @@ const signup = async () => {
         email: email.value,
         password: password.value,
       })
+      router.push('/createProfile')
     } catch (error) {
       toast.error(error.message, {
         position: 'bottom-right',

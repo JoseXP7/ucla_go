@@ -1,21 +1,43 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import { useAuth } from '@/composables/useAuth'
-
-const { getSession } = useAuth()
+import { useUserStore } from '@/stores/userStore'
 
 // Check if the user is authenticated before each route
 
 const isAuth = async (to, from, next) => {
+  const { getSession } = useAuth()
+  const userStore = useUserStore()
   const session = await getSession()
   if (!session) {
     next({ name: 'login' })
+  }
+
+  userStore.setUser(session.user)
+
+  let userProfile = userStore.profile
+
+  if (!userProfile) {
+    try {
+      userProfile = await userStore.getProfile()
+    } catch (error) {
+      userProfile = null
+    }
+  }
+
+  if (!userProfile) {
+    if (to.name !== 'createProfile') {
+      next({ name: 'createProfile' })
+    } else {
+      next()
+    }
   } else {
     next()
   }
 }
 
 const isLoginAuth = async (to, from, next) => {
+  const { getSession } = useAuth()
   const session = await getSession()
   if (session) {
     next({ name: 'mybalance' })
@@ -65,6 +87,7 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/createProfileView.vue'),
+      beforeEnter: isAuth,
     },
     {
       path: '/mybalance',
