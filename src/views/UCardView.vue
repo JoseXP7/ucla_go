@@ -1,27 +1,25 @@
 <script setup>
+import { onMounted } from 'vue'
+import { useUcardStore } from '@/stores/ucardStore'
+import { useUserStore } from '@/stores/userStore'
+import DialogUCardPrompt from '@/components/DialogUCardPrompt.vue'
 import { Button } from '@/components/ui/button'
 import { RouterLink } from 'vue-router'
 import UCard from '@/components/UCard.vue'
 
-/*Data of the card:
-- card_id
-- user_id
-- qr_code_data
-- card_status
-- issue_date
-*/
+const ucardStore = useUcardStore()
+const userStore = useUserStore()
 
-const ucard = {
-  card_id: 1,
-  user_id: 2,
-  qr_code_data: 'XXXX-XXXX-XXXX-XXXX-XXXX',
-  card_status: 'Activa',
-  issue_date: '03-02-2025',
-}
+onMounted(async () => {
+  if (userStore.user?.id) {
+    await ucardStore.fetchUCard(userStore.user.id)
+  }
+})
 </script>
 
 <template>
   <section>
+    <DialogUCardPrompt />
     <div class="mt-4 flex justify-between px-4">
       <div class="flex items-center gap-x-2">
         <RouterLink
@@ -45,14 +43,14 @@ const ucard = {
       </div>
     </div>
 
-    <div class="mt-4">
-      <UCard :ucard="ucard" />
+    <div class="mt-4" v-if="ucardStore.ucard">
+      <UCard :ucard="ucardStore.ucard" />
     </div>
 
     <div class="mt-9 mb-4 px-4">
       <h3>Acciones</h3>
       <!-- Botones de descargar y Bloquear, además recuerdame poner un as-child en cada button si quiero agregar un router link-->
-      <div class="flex justify-between mt-4">
+      <div class="flex justify-between mt-4" v-if="ucardStore.ucard">
         <Button class="bg-blue-600 hover:bg-blue-500 focus-visible:ring-blue-500/50"
           >Descargar U-Card</Button
         >

@@ -1,4 +1,6 @@
 <script setup>
+import { ref, watchEffect } from 'vue'
+import QRCode from 'qrcode'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -11,11 +13,18 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 
-defineProps({
-  ucard: {
-    type: Object,
-    required: true,
-  },
+const props = defineProps({
+  ucard: Object,
+})
+
+const qrCodeUrl = ref('')
+
+watchEffect(async () => {
+  if (props.ucard?.qr_code_data) {
+    qrCodeUrl.value = await QRCode.toDataURL(props.ucard.qr_code_data, {
+      width: 512,
+    })
+  }
 })
 </script>
 
@@ -64,7 +73,8 @@ defineProps({
               </DialogHeader>
               <img
                 class="relative object-cover w-full h-full rounded-xl"
-                src="https://i.imgur.com/kGkSg1v.png"
+                v-if="qrCodeUrl"
+                :src="qrCodeUrl"
               />
               <p class="text-center">{{ ucard.qr_code_data }}</p>
               <DialogFooter>
